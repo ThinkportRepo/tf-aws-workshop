@@ -7,7 +7,7 @@ variable "name" {}
 variable "role_arn" {}
 
 variable "connections" {
-  type    = "list"
+  type    = list
   default = []
 }
 
@@ -39,7 +39,7 @@ variable "bookmark" {
 }
 
 variable "bookmark_options" {
-  type = "map"
+  type = map(string)
 
   default = {
     enabled  = "job-bookmark-enable"
@@ -67,6 +67,6 @@ variable "max_concurrent" {
 }
 
 variable "arguments" {
-  type    = "map"
+  type    = map(string)
   default = {}
 }

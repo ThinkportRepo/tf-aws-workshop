@@ -1,3 +1,4 @@
+#### GLUE JOB ##########
 variable "create_job" {
   default = true
 }
@@ -11,7 +12,7 @@ variable "job_role_arn" {
 }
 
 variable "job_connections" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
@@ -36,6 +37,14 @@ variable "job_temp_dir" {
 }
 
 variable "job_arguments" {
-  type    = "map"
+  type    = map(string)
   default = {}
+}
+###### GLUE JOB S3 TARGET BUCKET ########
+variable "job_target_bucket" {
+  default = ""
+}
+###### GLUE JOB S3 TMP BUCKET ########
+variable "job_tmp_bucket" {
+  default = ""
 }

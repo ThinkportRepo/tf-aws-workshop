@@ -1,6 +1,0 @@
-job_name="tf-aws-workshop-test-job"
-job_script="./scripts/test_etl.py"
-job_target_bucket = "test-etl-result"
-job_tmp_bucket = "test-etl-tmp"
-job_script_bucket = "test-etl-source"
-job_iam_role = "test-job-iam-role"

@@ -7,17 +7,35 @@ terraform {
   }
 
   # Configure remote backend with state locking
+  # Key -> path to the state file inside bucket, when using non-default workspace
+  # the state file will be /workspace_key_prefix/workspace_name/key : /env/staging/testETL/terraform.tfstate
   backend "s3" {
-    bucket = "my-terraform-state"
-    key    = "path/to/my-state-file"
+    bucket = "aws-tf-remote-backend"
+    key    = "testETL/terraform.tfstate" # path to the state file inside s3 bucket
     region = "eu-central-1"
-    dynamodb_table = "terraform_locks"
+    dynamodb_table = "aws-tf-s3-state-lock"
   }
+}
+
+locals {
+  account_id = {
+    prod :    597575188840
+    dev :     868312938057
+    staging : 232021966246
+  }
+
+  job_script_bucket = "${var.job_script_bucket}-${terraform.workspace}"
+  job_target_bucket = "${var.job_target_bucket}-${terraform.workspace}"
+  job_tmp_bucket    = "${var.job_tmp_bucket}-${terraform.workspace}"
+  job_name          = "${var.job_name}-${terraform.workspace}"
 }
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "eu-central-1"
+  region = var.aws_region
+  assume_role {
+    role_arn = "arn:aws:iam::${local.account_id[var.aws_account]}:role/aws-gh-oicd"
+  }
 }
 
 # Example for local module and submodules
@@ -26,7 +44,7 @@ module "glue_job" {
 
   create = var.create_job
 
-  name   = var.job_name
+  name   = local.job_name
   role_arn = module.glue_job_role.arn
   script_location = module.s3_script_bucket.s3_bucket_arn
 
@@ -39,7 +57,7 @@ module "glue_job" {
 # Example for TF registry module
 module "s3_target_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
-  bucket = var.job_target_bucket
+  bucket = local.job_target_bucket
 
   acl    = "private"
 
@@ -65,7 +83,7 @@ module "s3_target_bucket" {
 
 module "s3_tmp_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
-  bucket = var.job_tmp_bucket
+  bucket = local.job_tmp_bucket
 
   acl    = "private"
 
@@ -91,7 +109,7 @@ module "s3_tmp_bucket" {
 
 module "s3_script_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
-  bucket = var.job_script_bucket
+  bucket = local.job_script_bucket
 
   acl    = "private"
 
@@ -154,12 +172,12 @@ data "aws_iam_policy_document" "s3_access" {
     sid       = "FullAccess"
     effect    = "Allow"
     resources = [
-      "arn:aws:s3:::${var.job_script_bucket}",
-      "arn:aws:s3:::${var.job_script_bucket}/*",
-      "arn:aws:s3:::${var.job_target_bucket}",
-      "arn:aws:s3:::${var.job_target_bucket}/*",
-      "arn:aws:s3:::${var.job_tmp_bucket}",
-      "arn:aws:s3:::${var.job_tmp_bucket}/*"
+      "arn:aws:s3:::${local.job_script_bucket}",
+      "arn:aws:s3:::${local.job_script_bucket}/*",
+      "arn:aws:s3:::${local.job_target_bucket}",
+      "arn:aws:s3:::${local.job_target_bucket}/*",
+      "arn:aws:s3:::${local.job_tmp_bucket}",
+      "arn:aws:s3:::${local.job_tmp_bucket}/*"
     ]
 
     actions = [

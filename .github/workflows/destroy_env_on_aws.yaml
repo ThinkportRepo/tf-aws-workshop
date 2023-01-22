@@ -1,0 +1,35 @@
+name: Destroy dev environment
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+jobs:
+  Init:
+    runs-on: ubuntu-latest
+      steps:
+        - name: set up terraform
+          uses: hashicorp/setup-terraform@v2
+          with:
+            terraform_version: ${{ env.tf_version }}
+
+        - name: configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@master
+          with:
+            aws-region: eu-central-1
+            role-to-assume: arn:aws:iam::<managing_account_id>:role/GitHubActions_Workflow_role
+
+  DestroyDev:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./tf/testETL
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
+      - run: terraform init
+      - run: terraform workspace select $BRANCH_NAME
+      - run: terraform destroy -auto-approve
+      - run: terraform workspace select default
+      - run: terraform workspace delete $BRANCH_NAME

@@ -4,7 +4,7 @@ variable "create_job" {
 }
 
 variable "job_name" {
-  default = ""
+  default = "tf-aws-workshop-test-job"
 }
 
 variable "job_role_arn" {
@@ -21,7 +21,7 @@ variable "job_max_capacity" {
 }
 
 variable "job_script" {
-  default = ""
+  default = "./scripts/test_etl.py"
 }
 
 variable "job_language" {
@@ -40,19 +40,26 @@ variable "job_arguments" {
 }
 ###### GLUE JOB S3 TARGET BUCKET ########
 variable "job_target_bucket" {
-  default = ""
+  default = "test-etl-result"
 }
 ###### GLUE JOB S3 TMP BUCKET ########
 variable "job_tmp_bucket" {
-  default = ""
+  default = "test-etl-tmp"
 }
 ###### GLUE JOB S3 SOURCE BUCKET ########
 variable "job_script_bucket" {
-  default = ""
+  default = "job_script_bucket"
 }
 ###### GLUE JOB IAM ROLE ########
 variable "job_iam_role" {
+  default = "test-job-iam-role"
+}
+####### AWS Provider ###############
+variable "aws_account" {
   default = ""
 }
 
+variable "aws_region" {
+  default = "eu-central-1"
+}
 

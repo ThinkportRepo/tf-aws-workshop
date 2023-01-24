@@ -50,7 +50,7 @@ jobs:
     steps:
         # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: tf init
-      - run: terraform init
+        run: terraform init
       - run: terraform fmt -check
       - run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
       - run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
@@ -71,7 +71,7 @@ jobs:
       name: staging
     steps:
       - name: tf init
-      - run: terraform init
+        run: terraform init
       - run: terraform fmt -check
       - run: terraform workspace select staging || terraform workspace new staging
 
@@ -90,7 +90,7 @@ jobs:
     steps:
        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: tf init
-      - run: terraform init
+        run: terraform init
       - run: terraform fmt -check
       - run: terraform workspace select prod || terraform workspace new prod
 

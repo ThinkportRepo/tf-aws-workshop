@@ -16,26 +16,26 @@ env:
 jobs:
   Init:
     runs-on: ubuntu-latest
-      steps:
-        # Checkout the repository to the GitHub Actions runner
-        - name: checkout
-          uses: actions/checkout@v3
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: checkout
+        uses: actions/checkout@v3
 
-        - name: set up python
-          uses: actions/setup-python@v3
-          with:
-            python-version: ${{ env.python_version }}
+      - name: set up python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.python_version }}
 
-        - name: set up terraform
-          uses: hashicorp/setup-terraform@v2
-          with:
-            terraform_version: ${{ env.tf_version }}
+      - name: set up terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.tf_version }}
 
-        - name: configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@master
-          with:
-            aws-region: ${{ env.aws-region }}
-            role-to-assume: ${{ env.workflow_role }}
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-region: ${{ env.aws-region }}
+          role-to-assume: ${{ env.workflow_role }}
 
   DeployDev:
     name: Deploy to Dev
@@ -56,7 +56,7 @@ jobs:
         - run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
 
         - name: tf apply
-          run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=env/dev.tfvars
+          run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=./tf/testETL/env/dev.tfvars
 
 
   DeployStaging:
@@ -76,7 +76,7 @@ jobs:
         - run: terraform workspace select staging || terraform workspace new staging
 
         - name: tf apply
-          run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=env/staging.tfvars
+          run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=./tf/testETL/env/staging.tfvars
 
   DeployProd:
     name: Deploy to Production
@@ -95,6 +95,6 @@ jobs:
       - run: terraform workspace select prod || terraform workspace new prod
 
       - name: tf apply
-        run: terraform apply -auto-approve -input=false -var="aws_account=prod" -var-file=env/prod.tfvars
+        run: terraform apply -auto-approve -input=false -var="aws_account=prod" -var-file=./tf/testETL/env/prod.tfvars
 
 

@@ -39,44 +39,44 @@ jobs:
 
   DeployDev:
     name: Deploy to Dev
-      if: github.event_name == 'pull_request'
-      needs: [ Init ]
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: ./tf/testETL
-      environment:
-        name: dev
-      steps:
-          # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-        - name: tf init
-        - run: terraform init
-        - run: terraform fmt -check
-        - run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
-        - run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
+    if: github.event_name == 'pull_request'
+    needs: [ Init ]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./tf/testETL
+    environment:
+      name: dev
+    steps:
+        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: tf init
+      - run: terraform init
+      - run: terraform fmt -check
+      - run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
+      - run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
 
-        - name: tf apply
-          run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=./tf/testETL/env/dev.tfvars
+      - name: tf apply
+        run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=./tf/testETL/env/dev.tfvars
 
 
   DeployStaging:
     name: Deploy to Staging
-      if: github.event.ref == 'refs/heads/main'
-      needs: [ Init ]
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: ./tf/testETL
-      environment:
-        name: staging
-      steps:
-        - name: tf init
-        - run: terraform init
-        - run: terraform fmt -check
-        - run: terraform workspace select staging || terraform workspace new staging
+    if: github.event.ref == 'refs/heads/main'
+    needs: [ Init ]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./tf/testETL
+    environment:
+      name: staging
+    steps:
+      - name: tf init
+      - run: terraform init
+      - run: terraform fmt -check
+      - run: terraform workspace select staging || terraform workspace new staging
 
-        - name: tf apply
-          run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=./tf/testETL/env/staging.tfvars
+      - name: tf apply
+        run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=./tf/testETL/env/staging.tfvars
 
   DeployProd:
     name: Deploy to Production

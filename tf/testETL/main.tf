@@ -7,13 +7,11 @@ terraform {
   }
 
   # Configure remote backend with state locking
-  # Key -> path to the state file inside bucket, when using non-default workspace
-  # the state file will be /workspace_key_prefix/workspace_name/key : /env/staging/testETL/terraform.tfstate
   backend "s3" {
-    bucket = "aws-tf-remote-backend"
-    key    = "testETL/terraform.tfstate" # path to the state file inside s3 bucket
+    bucket = "${local.organization_id}-tf-remote-backend"
+    key    = "testETL/terraform.tfstate"
     region = "eu-central-1"
-    dynamodb_table = "aws-tf-s3-state-lock"
+    dynamodb_table = "${local.organization_id}-tf-s3-state-lock"
   }
 }
 
@@ -23,6 +21,8 @@ locals {
     dev :     868312938057
     staging : 232021966246
   }
+
+  organization_id = "ou-anm4-0exbp2yg"
 
   job_script_bucket = "${var.job_script_bucket}-${terraform.workspace}"
   job_target_bucket = "${var.job_target_bucket}-${terraform.workspace}"
@@ -34,7 +34,7 @@ locals {
 provider "aws" {
   region = var.aws_region
   assume_role {
-    role_arn = "arn:aws:iam::${local.account_id[var.aws_account]}:role/aws-gh-oicd"
+    role_arn = "arn:aws:iam::${local.account_id[var.aws_account]}:role/AutomationAccountAccessRole"
   }
 }
 

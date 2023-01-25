@@ -32,12 +32,6 @@ variable "job_bookmark" {
   default = "disabled"
 }
 
-variable "job_arguments" {
-  type    = map(string)
-  default = {
-    S3_TARGET_BUCKET = module.s3_target_bucket.s3_bucket_arn
-  }
-}
 ###### GLUE JOB S3 TARGET BUCKET ########
 variable "job_target_bucket" {
   default = "test-etl-result"

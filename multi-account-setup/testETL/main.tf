@@ -32,7 +32,7 @@ locals {
 provider "aws" {
   region = var.aws_region
   assume_role {
-    role_arn = "arn:aws:iam::${local.account_id[var.aws_account]}:role/AutomationAccountAccessRole"
+    role_arn = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
   }
 }
 

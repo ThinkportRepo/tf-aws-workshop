@@ -60,12 +60,12 @@ jobs:
       - run: terraform fmt -check
       - run: |
           HEAD_REF=${{ github.head_ref }}
-          BRANCH_NAME="${HEAD_REF////_}"
+          BRANCH_NAME="${HEAD_REF////-}"
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
       - run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
 
       - name: multi-account-setup apply
-        run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=./multi-account-setup/testETL/env/dev.tfvars
+        run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=./env/dev.tfvars
 
 
   DeployStaging:
@@ -91,7 +91,7 @@ jobs:
       - run: terraform workspace select staging || terraform workspace new staging
 
       - name: multi-account-setup apply
-        run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=./multi-account-setup/testETL/env/staging.tfvars
+        run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=./env/staging.tfvars
 
   DeployProd:
     name: Deploy to Production
@@ -115,6 +115,6 @@ jobs:
       - run: terraform workspace select prod || terraform workspace new prod
 
       - name: multi-account-setup apply
-        run: terraform apply -auto-approve -input=false -var="aws_account=prod" -var-file=./multi-account-setup/testETL/env/prod.tfvars
+        run: terraform apply -auto-approve -input=false -var="aws_account=prod" -var-file=./env/prod.tfvars
 
 

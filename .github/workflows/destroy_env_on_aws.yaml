@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           HEAD_REF=${{ github.head_ref }}
-          BRANCH_NAME="${HEAD_REF////_}"
+          BRANCH_NAME="${HEAD_REF////-}"
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
       - run: terraform init
       - run: terraform workspace select $BRANCH_NAME

@@ -40,7 +40,9 @@ jobs:
           role-to-assume: ${{ env.workflow_role }}
       - uses: actions/checkout@v3
       - run: |
-          echo "BRANCH_NAME=${{ github.head_ref////- }}" >> $GITHUB_ENV
+          HEAD_REF=${{ github.head_ref }}
+          BRANCH_NAME="${HEAD_REF////_}"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
       - run: terraform init
       - run: terraform workspace select $BRANCH_NAME
       - run: terraform destroy -auto-approve

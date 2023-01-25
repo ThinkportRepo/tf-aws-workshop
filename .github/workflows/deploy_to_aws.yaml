@@ -22,10 +22,6 @@ jobs:
   Init:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repository to the GitHub Actions runner
-      - name: checkout
-        uses: actions/checkout@v3
-
       - name: set up python
         uses: actions/setup-python@v4
         with:
@@ -53,7 +49,7 @@ jobs:
     environment:
       name: dev
     steps:
-        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - uses: actions/checkout@v3
       - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check
@@ -75,6 +71,7 @@ jobs:
     environment:
       name: staging
     steps:
+      - uses: actions/checkout@v3
       - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check
@@ -93,7 +90,7 @@ jobs:
     environment:
       name: prod
     steps:
-       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - uses: actions/checkout@v3
       - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check

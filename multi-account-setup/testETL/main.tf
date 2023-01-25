@@ -37,22 +37,22 @@ provider "aws" {
 }
 
 # Example for local module and submodules
-module "glue_job" {
-  source = "../modules/glue_job"
-
-  create = var.create_job
-
-  name            = local.job_name
-  role_arn        = module.glue_job_role.arn
-  script_location = module.s3_script_bucket.s3_bucket_arn
-
-  connections  = var.job_connections
-  max_capacity = var.job_max_capacity
-  arguments = {
-    S3_TARGET_BUCKET = module.s3_target_bucket.s3_bucket_arn
-  }
-  temp_dir = module.s3_tmp_bucket.s3_bucket_arn
-}
+#module "glue_job" {
+#  source = "../modules/glue_job"
+#
+#  create = var.create_job
+#
+#  name            = local.job_name
+#  role_arn        = module.glue_job_role.arn
+#  script_location = module.s3_script_bucket.s3_bucket_arn
+#
+#  connections  = var.job_connections
+#  max_capacity = var.job_max_capacity
+#  arguments = {
+#    S3_TARGET_BUCKET = module.s3_target_bucket.s3_bucket_arn
+#  }
+#  temp_dir = module.s3_tmp_bucket.s3_bucket_arn
+#}
 
 # Example for TF registry module
 module "s3_target_bucket" {

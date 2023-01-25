@@ -13,6 +13,11 @@ env:
   aws-region: eu-central-1
   workflow_role: arn:aws:iam::167758967276:role/GithubActionsWorkflowRole
 
+# These permissions are needed to interact with GitHub's OIDC Token endpoint.
+permissions:
+  contents: "read"
+  id-token: "write"
+
 jobs:
   Init:
     runs-on: ubuntu-latest

@@ -59,7 +59,7 @@ jobs:
         run: terraform init
       - run: terraform fmt -check
       - run: |
-          echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${{ github.head_ref////- }}" >> $GITHUB_ENV
       - run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
 
       - name: multi-account-setup apply

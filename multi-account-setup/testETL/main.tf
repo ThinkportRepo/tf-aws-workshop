@@ -8,10 +8,10 @@ terraform {
 
   # Configure remote backend with state locking
   backend "s3" {
-    bucket = "${local.organization_id}-tf-remote-backend"
+    bucket = "ou-anm4-0exbp2yg-tf-remote-backend"
     key    = "testETL/terraform.tfstate"
     region = "eu-central-1"
-    dynamodb_table = "${local.organization_id}-tf-s3-state-lock"
+    dynamodb_table = "ou-anm4-0exbp2yg-tf-s3-state-lock"
   }
 }
 
@@ -21,8 +21,6 @@ locals {
     dev :     868312938057
     staging : 232021966246
   }
-
-  organization_id = "ou-anm4-0exbp2yg"
 
   job_script_bucket = "${var.job_script_bucket}-${terraform.workspace}"
   job_target_bucket = "${var.job_target_bucket}-${terraform.workspace}"
@@ -50,7 +48,9 @@ module "glue_job" {
 
   connections = var.job_connections
   max_capacity = var.job_max_capacity
-  arguments = var.job_arguments
+  arguments = {
+    S3_TARGET_BUCKET = module.s3_target_bucket.s3_bucket_arn
+  }
   temp_dir = module.s3_tmp_bucket.s3_bucket_arn
 }
 

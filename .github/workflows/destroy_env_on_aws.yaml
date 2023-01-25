@@ -1,4 +1,4 @@
-name: Destroy dev environment
+name: CI/CD to destroy AWS dev environment
 on:
   pull_request:
     branches:
@@ -20,7 +20,7 @@ jobs:
           terraform_version: ${{ env.tf_version }}
 
       - name: configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: ${{ env.aws-region }}
           role-to-assume: ${{ env.workflow_role }}

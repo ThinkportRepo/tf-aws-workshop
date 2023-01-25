@@ -33,6 +33,11 @@ jobs:
         working-directory: ./multi-account-setup/testETL
 
     steps:
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.aws-region }}
+          role-to-assume: ${{ env.workflow_role }}
       - uses: actions/checkout@v3
       - run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
       - run: terraform init

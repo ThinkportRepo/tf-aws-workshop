@@ -7,7 +7,7 @@ variable "name" {}
 variable "role_arn" {}
 
 variable "connections" {
-  type    = list
+  type    = list(string)
   default = []
 }
 

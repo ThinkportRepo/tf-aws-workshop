@@ -36,7 +36,7 @@ provider "aws" {
   }
 }
 
-## Example for local module and submodules
+### Example for local module and submodules
 #module "glue_job" {
 #  source = "../modules/glue_job"
 #

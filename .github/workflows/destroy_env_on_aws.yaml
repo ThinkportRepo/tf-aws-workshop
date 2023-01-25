@@ -30,7 +30,7 @@ jobs:
     needs: [ Init ]
     defaults:
       run:
-        working-directory: ./tf/testETL
+        working-directory: ./multi-account-setup/testETL
 
     steps:
       - uses: actions/checkout@v3

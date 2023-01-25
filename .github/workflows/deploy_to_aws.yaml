@@ -44,19 +44,19 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./tf/testETL
+        working-directory: ./multi-account-setup/testETL
     environment:
       name: dev
     steps:
         # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: tf init
+      - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check
       - run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
       - run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
 
-      - name: tf apply
-        run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=./tf/testETL/env/dev.tfvars
+      - name: multi-account-setup apply
+        run: terraform apply -auto-approve -input=false -var="aws_account=dev" -var-file=./multi-account-setup/testETL/env/dev.tfvars
 
 
   DeployStaging:
@@ -66,17 +66,17 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./tf/testETL
+        working-directory: ./multi-account-setup/testETL
     environment:
       name: staging
     steps:
-      - name: tf init
+      - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check
       - run: terraform workspace select staging || terraform workspace new staging
 
-      - name: tf apply
-        run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=./tf/testETL/env/staging.tfvars
+      - name: multi-account-setup apply
+        run: terraform apply -auto-approve -input=false -var="aws_account=staging" -var-file=./multi-account-setup/testETL/env/staging.tfvars
 
   DeployProd:
     name: Deploy to Production
@@ -84,17 +84,17 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./tf/testETL
+        working-directory: ./multi-account-setup/testETL
     environment:
       name: prod
     steps:
        # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: tf init
+      - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check
       - run: terraform workspace select prod || terraform workspace new prod
 
-      - name: tf apply
-        run: terraform apply -auto-approve -input=false -var="aws_account=prod" -var-file=./tf/testETL/env/prod.tfvars
+      - name: multi-account-setup apply
+        run: terraform apply -auto-approve -input=false -var="aws_account=prod" -var-file=./multi-account-setup/testETL/env/prod.tfvars
 
 

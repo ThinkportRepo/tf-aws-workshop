@@ -27,11 +27,12 @@ locals {
   job_tmp_bucket    = "${var.job_tmp_bucket}-${terraform.workspace}"
   job_name          = "${var.job_name}-${terraform.workspace}"
 }
-
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+# https://github.com/aws-actions/configure-aws-credentials/issues/279
 # Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
-  assume_role {
+  assume_role_with_web_identity {
     role_arn = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
   }
 }

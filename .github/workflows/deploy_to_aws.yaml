@@ -50,6 +50,7 @@ jobs:
     environment:
       name: dev
     steps:
+      - uses: actions/checkout@v3
       - name: get OIDC Token
         id: aws_sts_creds
         run: |
@@ -59,7 +60,6 @@ jobs:
         with:
           aws-region: ${{ env.aws-region }}
           role-to-assume: ${{ env.workflow_role }}
-      - uses: actions/checkout@v3
       - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check
@@ -84,6 +84,7 @@ jobs:
     environment:
       name: staging
     steps:
+      - uses: actions/checkout@v3
       - name: get OIDC Token
         id: aws_sts_creds
         run: |
@@ -93,7 +94,6 @@ jobs:
         with:
           aws-region: ${{ env.aws-region }}
           role-to-assume: ${{ env.workflow_role }}
-      - uses: actions/checkout@v3
       - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check
@@ -112,6 +112,7 @@ jobs:
     environment:
       name: prod
     steps:
+      - uses: actions/checkout@v3
       - name: get OIDC Token
         id: aws_sts_creds
         run: |
@@ -121,7 +122,6 @@ jobs:
         with:
           aws-region: ${{ env.aws-region }}
           role-to-assume: ${{ env.workflow_role }}
-      - uses: actions/checkout@v3
       - name: multi-account-setup init
         run: terraform init
       - run: terraform fmt -check

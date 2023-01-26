@@ -34,7 +34,7 @@ locals {
 provider "aws" {
   region = var.aws_region
   assume_role_with_web_identity {
-    role_arn = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
+    role_arn                = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
     web_identity_token_file = var.web_identity_token_file
   }
 }

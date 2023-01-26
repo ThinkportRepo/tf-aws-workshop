@@ -16,25 +16,18 @@ terraform {
 }
 
 locals {
-  account_id = {
-    prod : 597575188840
-    dev : 868312938057
-    staging : 232021966246
-  }
-
-  job_script_bucket = "${var.job_script_bucket}-${terraform.workspace}"
-  job_target_bucket = "${var.job_target_bucket}-${terraform.workspace}"
-  job_tmp_bucket    = "${var.job_tmp_bucket}-${terraform.workspace}"
-  job_name          = "${var.job_name}-${terraform.workspace}"
+  account_id = lookup(var.account_id, var.aws_account)
+  job_script_bucket = join("-", var.job_script_bucket, terraform.workspace)
+  job_target_bucket = join("-", var.job_target_bucket, terraform.workspace)
+  job_tmp_bucket    = join("-", var.job_tmp_bucket, terraform.workspace)
+  job_name          = join("-", var.job_name, terraform.workspace)
 }
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs
-# https://github.com/aws-actions/configure-aws-credentials/issues/279
-# https://docs.gitlab.com/ee/ci/cloud_services/aws/
-## Configure the AWS Provider
+
+# Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
   assume_role_with_web_identity {
-    role_arn                = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
+    role_arn = "arn:aws:iam::${local.account_id}:role/AutomationAccountAccessRole"
     web_identity_token_file = var.web_identity_token_file
   }
 }

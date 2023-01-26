@@ -33,9 +33,9 @@ locals {
 # Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
-#  assume_role_with_web_identity {
-#    role_arn = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
-#  }
+  #  assume_role_with_web_identity {
+  #    role_arn = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
+  #  }
 }
 
 ### Example for local module and submodules

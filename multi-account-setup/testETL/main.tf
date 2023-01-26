@@ -16,7 +16,7 @@ terraform {
 }
 
 locals {
-  account_id = lookup(var.account_id, var.aws_account)
+  account_id        = lookup(var.account_id, var.aws_account)
   job_script_bucket = join("-", var.job_script_bucket, terraform.workspace)
   job_target_bucket = join("-", var.job_target_bucket, terraform.workspace)
   job_tmp_bucket    = join("-", var.job_tmp_bucket, terraform.workspace)
@@ -27,7 +27,7 @@ locals {
 provider "aws" {
   region = var.aws_region
   assume_role_with_web_identity {
-    role_arn = "arn:aws:iam::${local.account_id}:role/AutomationAccountAccessRole"
+    role_arn                = "arn:aws:iam::${local.account_id}:role/AutomationAccountAccessRole"
     web_identity_token_file = var.web_identity_token_file
   }
 }

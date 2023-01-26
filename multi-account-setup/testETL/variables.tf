@@ -57,3 +57,9 @@ variable "aws_region" {
   default = "eu-central-1"
 }
 
+##### JWT Token
+variable "web_identity_token_file" {
+  type    = string
+  default = "/tmp/web_identity_token_file"
+}
+

@@ -60,7 +60,7 @@ jobs:
 
   DestroyDevWorkspace:
     runs-on: ubuntu-latest
-    needs: [ Init ]
+    needs: [ Init, DestroyDevResources ]
     defaults:
       run:
         working-directory: ./multi-account-setup/testETL

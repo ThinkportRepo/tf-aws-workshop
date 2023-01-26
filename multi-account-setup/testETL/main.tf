@@ -29,12 +29,13 @@ locals {
 }
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 # https://github.com/aws-actions/configure-aws-credentials/issues/279
+# https://docs.gitlab.com/ee/ci/cloud_services/aws/
 # Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
-  assume_role_with_web_identity {
-    role_arn = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
-  }
+#  assume_role_with_web_identity {
+#    role_arn = "arn:aws:iam::868312938057:role/AutomationAccountAccessRole"
+#  }
 }
 
 ### Example for local module and submodules

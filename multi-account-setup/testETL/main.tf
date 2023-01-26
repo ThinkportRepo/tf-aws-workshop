@@ -6,7 +6,7 @@ terraform {
     }
   }
 
-  # Configure remote backend with state locking
+  # Configure remote backend with state locking in automation account
   backend "s3" {
     bucket         = "ou-anm4-0exbp2yg-tf-remote-backend"
     key            = "testETL/terraform.tfstate"

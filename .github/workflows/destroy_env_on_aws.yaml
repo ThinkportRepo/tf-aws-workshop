@@ -9,6 +9,7 @@ env:
   tf_version: 1.3.7
   aws-region: eu-central-1
   workflow_role: arn:aws:iam::167758967276:role/GithubActionsWorkflowRole
+  web_identity_token_file: /tmp/web_identity_token_file
 
 jobs:
   Init:
@@ -31,14 +32,19 @@ jobs:
     defaults:
       run:
         working-directory: ./multi-account-setup/testETL
-
+    environment:
+      name: dev
     steps:
+      - uses: actions/checkout@v3
+      - name: get OIDC Token
+        id: aws_sts_creds
+        run: |
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value' > ${{ env.web_identity_token_file }}
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: ${{ env.aws-region }}
           role-to-assume: ${{ env.workflow_role }}
-      - uses: actions/checkout@v3
       - run: |
           HEAD_REF=${{ github.head_ref }}
           BRANCH_NAME="${HEAD_REF////-}"

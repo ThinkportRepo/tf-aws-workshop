@@ -17,10 +17,10 @@ terraform {
 
 locals {
   account_id        = lookup(var.account_id, var.aws_account)
-  job_script_bucket = join("-", var.job_script_bucket, terraform.workspace)
-  job_target_bucket = join("-", var.job_target_bucket, terraform.workspace)
-  job_tmp_bucket    = join("-", var.job_tmp_bucket, terraform.workspace)
-  job_name          = join("-", var.job_name, terraform.workspace)
+  job_script_bucket = join("-", [var.job_script_bucket, terraform.workspace])
+  job_target_bucket = join("-", [var.job_target_bucket, terraform.workspace])
+  job_tmp_bucket    = join("-", [var.job_tmp_bucket, terraform.workspace])
+  job_name          = join("-", [var.job_name, terraform.workspace])
 }
 
 # Configure the AWS Provider

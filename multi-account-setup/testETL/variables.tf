@@ -4,7 +4,7 @@ variable "create_job" {
 }
 
 variable "job_name" {
-  default = "tf-aws-workshop-test-job"
+  default = "test-etl-job"
 }
 
 variable "job_role_arn" {
@@ -42,7 +42,7 @@ variable "job_tmp_bucket" {
 }
 ###### GLUE JOB S3 SOURCE BUCKET ########
 variable "job_script_bucket" {
-  default = "job_script_bucket"
+  default = "test-etl-script-bucket"
 }
 ###### GLUE JOB IAM ROLE ########
 variable "job_iam_role" {
@@ -63,3 +63,13 @@ variable "web_identity_token_file" {
   default = "/tmp/web_identity_token_file"
 }
 
+##### Account Ids
+variable "account_id" {
+  type = map(string)
+
+  default = {
+    prod = "597575188840"
+    dev  = "868312938057"
+    staging = "232021966246"
+  }
+}

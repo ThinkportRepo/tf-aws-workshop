@@ -56,6 +56,6 @@ jobs:
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
       - run: terraform init
       - run: terraform workspace select $BRANCH_NAME
-      - run: terraform destroy -auto-approve
+      - run: terraform destroy -auto-approve -input=false -var="aws_account=dev" -var-file=./env/dev.tfvars
       - run: terraform workspace select default
       - run: terraform workspace delete $BRANCH_NAME

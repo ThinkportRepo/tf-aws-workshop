@@ -7,12 +7,15 @@ variable "name" {}
 variable "role_arn" {}
 
 variable "connections" {
-  type    = list(string)
   default = []
 }
 
-variable "max_capacity" {
-  default = 2
+variable "nr_of_workers" {
+  default = 1
+}
+
+variable "worker_type" {
+  default = "G.1X"
 }
 
 variable "script_location" {}
@@ -25,8 +28,12 @@ variable "language" {
   default = "python"
 }
 
+variable "glue_version" {
+  default = "3.0"
+}
+
 variable "python_version" {
-  default = "3.9"
+  default = "3"
 }
 
 variable "command_type" {

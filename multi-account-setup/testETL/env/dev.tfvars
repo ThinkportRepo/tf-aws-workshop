@@ -1,1 +1,1 @@
-job_max_capacity=2
+nr_of_workers=2

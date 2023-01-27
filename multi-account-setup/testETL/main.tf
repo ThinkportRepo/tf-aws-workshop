@@ -18,7 +18,6 @@ terraform {
 locals {
   account_id        = lookup(var.account_id, var.aws_account)
   job_script_bucket = join("-", [var.job_script_bucket, terraform.workspace])
-  job_target_bucket = join("-", [var.job_target_bucket, terraform.workspace])
   job_tmp_bucket    = join("-", [var.job_tmp_bucket, terraform.workspace])
   job_name          = join("-", [var.job_name, terraform.workspace])
 }
@@ -26,60 +25,40 @@ locals {
 # Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
-  assume_role_with_web_identity {
-    role_arn                = "arn:aws:iam::${local.account_id}:role/AutomationAccountAccessRole"
-    web_identity_token_file = var.web_identity_token_file
+  # will be assumed if pipeline is run via gh actions
+  dynamic "assume_role_with_web_identity" {
+    for_each = var.is_local == true ? [] : [1]
+
+    content {
+      role_arn                = "arn:aws:iam::${local.account_id}:role/AutomationAccountAccessRole"
+      web_identity_token_file = var.web_identity_token_file
+    }
+  }
+  # set variable is_local to true if run locally with iam user
+  dynamic "assume_role" {
+    for_each = var.is_local == true ? [1] : []
+    content {
+      role_arn = "arn:aws:iam::${local.account_id}:role/AutomationAccountAccessRole"
+    }
   }
 }
 
 ### Example for local module and submodules
-#module "glue_job" {
-#  source = "../modules/glue_job"
-#
-#  create = var.create_job
-#
-#  name            = local.job_name
-#  role_arn        = module.glue_job_role.arn
-#  script_location = module.s3_script_bucket.s3_bucket_arn
-#
-#  connections  = var.job_connections
-#  max_capacity = var.job_max_capacity
-#  arguments = {
-#    S3_TARGET_BUCKET = module.s3_target_bucket.s3_bucket_arn
-#  }
-#  temp_dir = module.s3_tmp_bucket.s3_bucket_arn
-#}
+module "glue_job" {
+  source = "../modules/glue_job"
 
-# Example for TF registry module
-module "s3_target_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
-  bucket = local.job_target_bucket
+  create = var.create_job
 
-  acl = "private"
-
-  # Auto-delete objects in bucket
-  force_destroy = true
-
-  versioning = {
-    status     = true
-    mfa_delete = false
-  }
-
-  # S3 bucket-level Public Access Block configuration
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-
-  # S3 Bucket Ownership Controls
-  control_object_ownership = true
-  object_ownership         = "ObjectWriter"
-
+  name            = local.job_name
+  role_arn        = module.glue_job_role.arn
+  script_location = "s3://${module.s3_script_bucket.s3_bucket_id}/test_etl.py"
+  nr_of_workers   = var.nr_of_workers
+  temp_dir = "s3://${module.s3_tmp_bucket.s3_bucket_id}/"
 }
 
 module "s3_tmp_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
-  bucket = local.job_tmp_bucket
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  bucket  = local.job_tmp_bucket
 
   acl = "private"
 
@@ -87,9 +66,9 @@ module "s3_tmp_bucket" {
   force_destroy = true
 
   versioning = {
-    status     = true
-    mfa_delete = false
+    enabled = true
   }
+  object_lock_enabled = true
 
   # S3 bucket-level Public Access Block configuration
   block_public_acls       = true
@@ -105,7 +84,7 @@ module "s3_tmp_bucket" {
 
 module "s3_script_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
-  bucket = local.job_script_bucket
+  bucket  = local.job_script_bucket
 
   acl = "private"
 
@@ -113,9 +92,9 @@ module "s3_script_bucket" {
   force_destroy = true
 
   versioning = {
-    status     = true
-    mfa_delete = false
+    enabled = true
   }
+  object_lock_enabled = true
 
   # S3 bucket-level Public Access Block configuration
   block_public_acls       = true
@@ -165,13 +144,10 @@ module "glue_job_role" {
 # Define Glue Job Policy
 data "aws_iam_policy_document" "s3_access" {
   statement {
-    sid    = "FullAccess"
     effect = "Allow"
     resources = [
       "arn:aws:s3:::${local.job_script_bucket}",
       "arn:aws:s3:::${local.job_script_bucket}/*",
-      "arn:aws:s3:::${local.job_target_bucket}",
-      "arn:aws:s3:::${local.job_target_bucket}/*",
       "arn:aws:s3:::${local.job_tmp_bucket}",
       "arn:aws:s3:::${local.job_tmp_bucket}/*"
     ]

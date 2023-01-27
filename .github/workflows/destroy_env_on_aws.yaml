@@ -77,5 +77,6 @@ jobs:
           HEAD_REF=${{ github.head_ref }}
           BRANCH_NAME="${HEAD_REF////-}"
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+      - run: terraform init
       - run: terraform workspace select default
       - run: terraform workspace delete $BRANCH_NAME

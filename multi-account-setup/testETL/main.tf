@@ -53,12 +53,12 @@ module "glue_job" {
   role_arn        = module.glue_job_role.arn
   script_location = "s3://${module.s3_script_bucket.s3_bucket_id}/test_etl.py"
   nr_of_workers   = var.nr_of_workers
-  temp_dir = "s3://${module.s3_tmp_bucket.s3_bucket_id}/"
+  temp_dir        = "s3://${module.s3_tmp_bucket.s3_bucket_id}/"
 }
 
 module "s3_tmp_bucket" {
-  source  = "terraform-aws-modules/s3-bucket/aws"
-  bucket  = local.job_tmp_bucket
+  source = "terraform-aws-modules/s3-bucket/aws"
+  bucket = local.job_tmp_bucket
 
   acl = "private"
 
@@ -84,7 +84,7 @@ module "s3_tmp_bucket" {
 
 module "s3_script_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
-  bucket  = local.job_script_bucket
+  bucket = local.job_script_bucket
 
   acl = "private"
 

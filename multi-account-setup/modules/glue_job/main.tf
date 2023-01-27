@@ -11,8 +11,10 @@ resource "aws_glue_job" "glue_job" {
 
   name               = var.name
   role_arn           = var.role_arn
-  connections        = [var.connections]
-  max_capacity       = var.max_capacity
+  connections        = var.connections
+  number_of_workers  = var.nr_of_workers
+  worker_type        = var.worker_type
+  glue_version       = var.glue_version
 
   command {
     script_location = var.script_location

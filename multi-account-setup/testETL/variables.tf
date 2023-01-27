@@ -16,8 +16,8 @@ variable "job_connections" {
   default = []
 }
 
-variable "job_max_capacity" {
-  default = 2
+variable "nr_of_workers" {
+  default = 1
 }
 
 variable "job_script" {
@@ -32,10 +32,6 @@ variable "job_bookmark" {
   default = "disabled"
 }
 
-###### GLUE JOB S3 TARGET BUCKET ########
-variable "job_target_bucket" {
-  default = "test-etl-result"
-}
 ###### GLUE JOB S3 TMP BUCKET ########
 variable "job_tmp_bucket" {
   default = "test-etl-tmp"
@@ -50,7 +46,7 @@ variable "job_iam_role" {
 }
 ####### AWS Provider ###############
 variable "aws_account" {
-  default = ""
+  default = "dev"
 }
 
 variable "aws_region" {
@@ -73,3 +69,10 @@ variable "account_id" {
     staging = "232021966246"
   }
 }
+
+### Identity executing terraform
+variable "is_local" {
+  type    = bool
+  default = false
+}
+

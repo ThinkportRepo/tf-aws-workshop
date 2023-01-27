@@ -21,11 +21,10 @@ def generate_data():
 
 
 def main():
-    args = getResolvedOptions(sys.argv, ["JOB_NAME", "S3_TARGET_BUCKET"])
+    args = getResolvedOptions(sys.argv, ["JOB_NAME"])
     job.init(args["JOB_NAME"], args)
     df = generate_data()
-    s3_target_bucket = args["S3_TARGET_BUCKET"]
-    df.write.csv(f"s3://{s3_target_bucket}")
+    df.show()
     job.commit()
 
 

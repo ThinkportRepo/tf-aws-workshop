@@ -25,7 +25,7 @@ locals {
 # Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
-  # will be assumed if pipeline is run via gh actions
+  # will be assumed if pipeline is run via gh actions±±+
   dynamic "assume_role_with_web_identity" {
     for_each = var.is_local == true ? [] : [1]
 
@@ -60,8 +60,6 @@ module "s3_tmp_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
   bucket = local.job_tmp_bucket
 
-  acl = "private"
-
   # Auto-delete objects in bucket
   force_destroy = true
 
@@ -78,7 +76,7 @@ module "s3_tmp_bucket" {
 
   # S3 Bucket Ownership Controls
   control_object_ownership = true
-  object_ownership         = "ObjectWriter"
+  object_ownership         = "BucketOwnerEnforced"
 }
 
 
@@ -86,8 +84,6 @@ module "s3_script_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
   bucket = local.job_script_bucket
 
-  acl = "private"
-
   # Auto-delete objects in bucket
   force_destroy = true
 
@@ -104,7 +100,7 @@ module "s3_script_bucket" {
 
   # S3 Bucket Ownership Controls
   control_object_ownership = true
-  object_ownership         = "ObjectWriter"
+  object_ownership         = "BucketOwnerEnforced"
 }
 
 # Upload local glue script to s3 bucket (example submodule)
@@ -132,8 +128,7 @@ module "glue_job_role" {
     "Service" = ["glue.amazonaws.com"]
   }
   managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
   ]
 
   policy_documents = [
@@ -146,17 +141,13 @@ data "aws_iam_policy_document" "s3_access" {
   statement {
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${local.job_script_bucket}",
       "arn:aws:s3:::${local.job_script_bucket}/*",
-      "arn:aws:s3:::${local.job_tmp_bucket}",
       "arn:aws:s3:::${local.job_tmp_bucket}/*"
     ]
 
     actions = [
       "s3:PutObject",
-      "s3:GetObject",
-      "s3:DeleteObject",
-      "s3:ListBucket",
+      "s3:GetObject"
     ]
   }
 }

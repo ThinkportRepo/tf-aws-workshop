@@ -64,9 +64,9 @@ variable "account_id" {
   type = map(string)
 
   default = {
-    prod    = "597575188840"
-    dev     = "868312938057"
-    staging = "232021966246"
+    prod    = "<fill_account_id_here>"
+    dev     = "<fill_account_id_here>"
+    staging = "<fill_account_id_here>"
   }
 }
 

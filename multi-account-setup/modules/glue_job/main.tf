@@ -22,7 +22,6 @@ resource "aws_glue_job" "glue_job" {
     name            = var.command_type
   }
 
-  # https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html
   default_arguments = merge(local.default_arguments, var.arguments)
 
   description = var.description

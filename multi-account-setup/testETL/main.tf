@@ -25,7 +25,7 @@ locals {
 # Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
-  # will be assumed if pipeline is run via gh actions±±+
+  # will be assumed if pipeline is run via gh actions
   dynamic "assume_role_with_web_identity" {
     for_each = var.is_local == true ? [] : [1]
 
